@@ -37,3 +37,34 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
+
+
+// step 3： 配置 pom 和 bintray 信息
+ext {
+    gitUrl = 'https://github.com/groooooomit/just-console-table.git'
+    siteUrl = 'https://github.com/groooooomit/just-console-table'
+    //
+    pom_groupId = 'com.bfu'
+    pom_artifactId = 'just-console-table'
+    pom_name = 'just-console-table'
+    pom_description = 'A Java console table log library for android.'
+    pom_licenseName = 'The Apache Software License, Version 2.0'
+    pom_licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    pom_developerId = 'groooooomit'
+    pom_developerName = 'groooooomit'
+    pom_developerEmail = 'fubofubo@hotmail.com'
+    pom_version = '1.0.0'
+    //
+    bintray_repo = 'just' // your repo name
+    bintray_name = 'console-table' // has to be same as your library module name
+    bintray_desc = '> A Java console table log library for android.'
+    bintray_licenses = ["Apache-2.0"]
+}
+
+// step 4: 引入 gradle
+apply from: 'https://raw.githubusercontent.com/groooooomit/jcenter/master/jcenter-maven-install.gradle'
+apply from: 'https://raw.githubusercontent.com/groooooomit/jcenter/master/jcenter-bintray-config.gradle'
+
+// step 5： 执行 gradle 命令
+// gradlew clean build install bintrayUpload
+
