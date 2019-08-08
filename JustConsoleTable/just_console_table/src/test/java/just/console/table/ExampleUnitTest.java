@@ -20,7 +20,7 @@ public class ExampleUnitTest {
 
     @Test
     public void testTable() {
-        String table = Table.from("老百姓", Arrays.asList("张三", "李四", "王五", "赵六", "钱七"));
+        String table = Table.of("老百姓", Arrays.asList("张三", "李四", "王五", "赵六", "钱七")).print();
         System.out.println(table);
     }
 }

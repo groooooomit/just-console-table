@@ -90,8 +90,7 @@ public class Table {
         return new Table(desc);
     }
 
-
-    public static <E> String from(String name, List<E> list) {
+    public static <E> Table of(String name, List<E> list) {
         final Table table = Table.create(name);
         if (null == list) {
             table.row(Cell.of(null));
@@ -101,10 +100,10 @@ public class Table {
                 table.row(i, list.get(i));
             }
         }
-        return table.print();
+        return table;
     }
 
-    public static <K, V> String from(String name, Map<K, V> map) {
+    public static <K, V> Table of(String name, Map<K, V> map) {
         final Table table = Table.create(name);
         if (null == map) {
             table.row(Cell.of(null));
@@ -113,7 +112,7 @@ public class Table {
                 table.row(entry.getKey(), entry.getValue());
             }
         }
-        return table.print();
+        return table;
     }
 
 }
