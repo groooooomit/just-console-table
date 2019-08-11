@@ -1,13 +1,24 @@
 package just.console.table;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 // todo 合并单元格
-public class ComposeCell extends Cell {
+public class ComposeCell implements Cell {
 
-    public ComposeCell(@Nullable String content) {
-        super(content);
+
+    @Override
+    public int getWidth() {
+        return 0;
     }
 
+    @Override
+    public int getHeight() {
+        return 0;
+    }
 
+    @NonNull
+    @Override
+    public String print(int floor, int allowMaxWidth) {
+        return null;
+    }
 }
