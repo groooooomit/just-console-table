@@ -52,7 +52,7 @@ ext {
     pom_developerId = 'groooooomit'
     pom_developerName = 'groooooomit'
     pom_developerEmail = 'fubofubo@hotmail.com'
-    pom_version = '1.0.6'
+    pom_version = '1.0.8'
     //
     bintray_repo = 'just' // your repo name
     bintray_name = 'console-table' // has to be same as your library module name
