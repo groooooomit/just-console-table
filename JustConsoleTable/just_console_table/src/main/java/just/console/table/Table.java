@@ -4,21 +4,16 @@ package just.console.table;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**
- * todo 增加合并单元格、过滤、排序等操作
- * todo IDEA 是 15:8
- * todo 记事本是 20:9
- * todo platform
- * todo 合并单元格
- * todo 利用 \r 实现动态图，即动画，刷新
- * todo 打印 LIST 时，末尾单元格不满时不用 null 进行填充
- */
 public class Table {
 
     private static final String DEFAULT_TABLE_MARGIN = "  ";
     private static final int DEFAULT_CELL_MARGIN = 1;
+    private static final String NEXT_LINE = "\r\n";
 
     /**
      * 表名
@@ -42,12 +37,14 @@ public class Table {
         final List<Integer> columnWidths = getColumnWidth(this.rows);
 
         /* 打印表头. */
-        final StringBuilder stringBuilder = new StringBuilder("\n \n")
+        final StringBuilder stringBuilder = new StringBuilder()
+                .append(" ")
+                .append(NEXT_LINE)
+                .append(NEXT_LINE)
                 .append(DEFAULT_TABLE_MARGIN)
                 .append("@ ")
                 .append(name)
-                .append("\n");
-
+                .append(NEXT_LINE);
 
         /* 打印顶边界. */
         stringBuilder.append(DEFAULT_TABLE_MARGIN);
@@ -62,13 +59,14 @@ public class Table {
                 stringBuilder
                         .append(DEFAULT_TABLE_MARGIN)
                         .append(row.string(i, columnWidths))
-                        .append("\n");
+                        .append(NEXT_LINE);
             }
 
             /* 打印底边界. */
             stringBuilder.append(DEFAULT_TABLE_MARGIN);
             appendBottomBorder(stringBuilder, columnWidths, DEFAULT_CELL_MARGIN);
         }
+        stringBuilder.append(" ");
         return stringBuilder.toString();
     }
 
@@ -105,7 +103,7 @@ public class Table {
             }
             stringBuilder.append("+");
         }
-        stringBuilder.append("\n");
+        stringBuilder.append(NEXT_LINE);
     }
 
     /**
@@ -119,7 +117,7 @@ public class Table {
             }
             stringBuilder.append("+");
         }
-        stringBuilder.append("\n");
+        stringBuilder.append(NEXT_LINE);
     }
 
     public DefaultRow row(Cell... cells) {
@@ -168,6 +166,34 @@ public class Table {
             final int size = list.size();
             for (int i = 0; i < size; i++) {
                 table.row(DefaultCell.of(i), DefaultCell.of(list.get(i)));
+            }
+        }
+        return table;
+    }
+
+
+    /**
+     * 打印 list，垂直排列
+     *
+     * @param name 表名称
+     * @param list 要打印的 list
+     * @param <E>  元素泛型
+     * @return 返回描述 list 元素的表
+     */
+    public static <E> Table list(String name, @Nullable List<E> list, @NonNull Function<E, List<Cell>> mapper) {
+        final Table table = Table.create(name);
+        if (null == list) {
+            table.row(DefaultCell.of(null));
+        } else {
+            final int size = list.size();
+            for (int i = 0; i < size; i++) {
+                final List<Cell> cells = new ArrayList<>();
+                cells.add(DefaultCell.of(i));
+                final List<Cell> parseCells = mapper.apply(list.get(i));
+                if (null != parseCells) {
+                    cells.addAll(parseCells);
+                }
+                table.row(cells);
             }
         }
         return table;
@@ -294,5 +320,29 @@ public class Table {
         return table;
     }
 
+    /**
+     * 打印异常信息
+     */
+    public static Table error(String name, @NonNull Throwable throwable) {
+        final StringWriter stringWriter = new StringWriter();
+        throwable.printStackTrace(new PrintWriter(stringWriter, true));
+        return Table.create(name)
+                .row(stringWriter.toString())
+                .end();
+    }
+
+    private static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS E 'GMT'Z", Locale.ENGLISH);
+
+    public static Table errorReach(String name, @NonNull Throwable throwable) {
+        final StringWriter stringWriter = new StringWriter();
+        throwable.printStackTrace(new PrintWriter(stringWriter, true));
+        return Table.create(name)
+                .row("Thread", Thread.currentThread().getName())
+                .row(Arrays.asList(DefaultCell.of("Time"), DefaultCell.of(DEFAULT_DATE_FORMAT.format(new Date()))))
+                .row(Arrays.asList(DefaultCell.of("Type"), DefaultCell.of(throwable.getClass().getName())))
+                .row(Arrays.asList(DefaultCell.of("Message"), DefaultCell.of(throwable.getMessage())))
+                .row(Arrays.asList(DefaultCell.of("Stack Trace"), DefaultCell.of(stringWriter.toString())))
+                .end();
+    }
 
 }

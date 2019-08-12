@@ -21,16 +21,6 @@ final class DefaultLine implements Line {
     private static final int TAB_CHAR_LENGTH = 4;
 
     /**
-     * 全角与半角显示长度比例
-     * <p>
-     * 一个全角字符的显示宽度等于 1.875 个半角字符的显示宽度
-     * <p>
-     * 即 8 个汉字打印出来的长度正好等于 8 * 1.875 = 15 个字母打印出来的长度
-     */
-    private static final float CHAR_FACTORY = 1.875f;
-
-
-    /**
      * 对齐后的字符串
      */
     private final String fixedValue;
@@ -40,9 +30,14 @@ final class DefaultLine implements Line {
      */
     private final int showLength;
 
+    /**
+     * 字体类型
+     */
+//    private final Font font;
+
     public DefaultLine(@Nullable String str, @NonNull Cell.Gravity gravity) {
-        /* 8位全角对齐. */
-        this.fixedValue = replaceTabTo4Blank(fixed(str, 8, gravity));
+        /* 全角对齐. */
+        this.fixedValue = replaceTabTo4Blank(fixed(str, Font.getDefaultFont().fullCount(), gravity));
         this.showLength = calcShowLength(this.fixedValue) + calculateTabShowLength(this.fixedValue);
     }
 
@@ -194,7 +189,13 @@ final class DefaultLine implements Line {
      * 即返回最小的但比 n 大的 base 的整数倍的数
      */
     private static int getNearestNumber(int n, int base) {
-        return n + base - n % base;
+        final int tail = n % base;
+        if (tail == 0) {// 整除，返回大的结果
+            return Math.max(n, base);
+        } else {
+            // 不整除
+            return n + base - tail;
+        }
     }
 
     /**
@@ -282,7 +283,7 @@ final class DefaultLine implements Line {
         /* 半角字符数量 */
         final int halfCharCount = charLength - fullCharCount;
         /* 显示长度. */
-        return Math.round(fullCharCount * CHAR_FACTORY) + halfCharCount;
+        return Math.round(fullCharCount * Font.getDefaultFont().scala()) + halfCharCount;
     }
 
 }

@@ -84,7 +84,7 @@ public final class DefaultCell implements Cell {
      */
     @NonNull
     private static List<Line> parseToLines(@Nullable String content, Gravity gravity) {
-        final String[] strings = String.valueOf(content).split("\n");
+        final String[] strings = String.valueOf(content).split("(\\r\\n|\\r|\\n|\\n\\r)");
         final List<Line> lines = new ArrayList<>(strings.length);
         for (String str : strings) {
             lines.add(new DefaultLine(str, gravity));

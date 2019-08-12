@@ -175,4 +175,19 @@ public class ExampleUnitTest {
                         + "| 正 | 正 | 正 | 正 | 正 | 正 | 正 | 正 |\n"
                         + "+----+----+----+----+----+----+----+----+");
     }
+
+    @Test
+    public void test2() {
+        try {
+            try {
+                int i = 10 / 0;
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            String error = Table.errorReach("Process data error", e).string();
+            System.err.println(error);
+            System.err.println(error);
+        }
+    }
 }
